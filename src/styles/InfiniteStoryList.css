@@ -10,6 +10,35 @@
   margin-bottom: 30px;
 }
 
+.load-more-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0;
+  padding: 20px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.load-more-button {
+  background-color: var(--telekom-magenta);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(var(--telekom-magenta-rgb), 0.3);
+}
+
+.load-more-button:hover {
+  background-color: var(--telekom-light-magenta);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--telekom-magenta-rgb), 0.4);
+}
+
 .loading-indicator {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import './styles/theme.css';
 import Header from './components/Header';
@@ -15,6 +15,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('top');
   const [error, setError] = useState(null);
+  const [showScrollButtons, setShowScrollButtons] = useState(false);
+  const footerRef = useRef(null);
   
   // Fetch just the featured story
   const getFeaturedStory = useCallback(async () => {
@@ -65,6 +67,35 @@ function App() {
   const handleRetry = () => {
     getFeaturedStory();
   };
+
+   // Scroll to top function
+   const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Scroll to footer function
+  const scrollToFooter = () => {
+    if (footerRef.current) {
+      footerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Show/hide scroll buttons based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollButtons(true);
+      } else {
+        setShowScrollButtons(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   return (
     <div className="app-container">
@@ -97,7 +128,26 @@ function App() {
         </section>
       </div>
       
-      <Footer />
+      {showScrollButtons && (
+        <div className="scroll-buttons">
+          <button 
+            className="scroll-button back-to-top" 
+            onClick={scrollToTop}
+            aria-label="Back to top"
+          >
+            <i className="fa-solid fa-arrow-up"></i>
+          </button>
+          <button 
+            className="scroll-button view-footer" 
+            onClick={scrollToFooter}
+            aria-label="View footer"
+          >
+            <i className="fa-solid fa-arrow-down"></i>
+          </button>
+        </div>
+      )}
+      
+      <Footer ref={footerRef} />
     </div>
   );
 }

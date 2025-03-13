@@ -9,15 +9,18 @@ const InfiniteStoryList = ({ category }) => {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+  const [autoLoad, setAutoLoad] = useState(true);
   const loaderRef = useRef(null);
-  const storiesPerPage = 10;
+  const storiesPerPage = 20;
   const initialOffset = 1; // Skip the first story (featured story)
+  const maxAutoLoadPages = 2; // Maximum number of pages to auto-load
 
   // Load initial stories
   useEffect(() => {
     setStories([]);
     setPage(0);
     setHasMore(true);
+    setAutoLoad(true);
     loadMoreStories(0);
   }, [category]);
 
@@ -43,6 +46,10 @@ const InfiniteStoryList = ({ category }) => {
           pageToLoad === 0 ? newStories : [...prevStories, ...newStories]
         );
         setPage(pageToLoad);
+        // Disable auto-loading after reaching maxAutoLoadPages
+        if (pageToLoad >= maxAutoLoadPages) {
+          setAutoLoad(false);
+        }
       }
     } catch (err) {
       console.error('Error loading more stories:', err);
@@ -54,6 +61,7 @@ const InfiniteStoryList = ({ category }) => {
 
   // Set up intersection observer for infinite scrolling
   useEffect(() => {
+    if (!autoLoad) return;
     const observer = new IntersectionObserver(
       entries => {
         const [entry] = entries;
@@ -74,11 +82,21 @@ const InfiniteStoryList = ({ category }) => {
         observer.unobserve(currentLoaderRef);
       }
     };
-  }, [loadMoreStories, hasMore, loading, page]);
+  }, [loadMoreStories, hasMore, loading, page, autoLoad]);
 
   // Handle retry when error occurs
   const handleRetry = () => {
     loadMoreStories(page);
+  };
+
+  // Handle manual load more
+  const handleLoadMore = () => {
+    loadMoreStories(page + 1);
+  };
+
+  // Toggle between auto-load and manual load
+  const toggleAutoLoad = () => {
+    setAutoLoad(!autoLoad);
   };
 
   return (
@@ -109,9 +127,17 @@ const InfiniteStoryList = ({ category }) => {
         </div>
       )}
       
-      {!loading && !error && hasMore && stories.length > 0 && (
+      {!loading && !error && hasMore && stories.length > 0 && autoLoad && (
         <div ref={loaderRef} className="loader-element">
           <p>Scroll down to load more stories</p>
+        </div>
+      )}
+
+      {!loading && !error && hasMore && stories.length > 0 && !autoLoad && (
+        <div className="load-more-container">
+          <button onClick={handleLoadMore} className="load-more-button">
+            Load More Stories
+          </button>
         </div>
       )}
       

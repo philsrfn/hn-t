@@ -22,8 +22,52 @@
   z-index: 1;
 }
 
+.scroll-buttons {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 100;
+}
+
+.scroll-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--telekom-magenta);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.scroll-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  background-color: var(--telekom-light-magenta);
+}
+
+.scroll-button i {
+  font-size: 1.2rem;
+}
+
 @media (max-width: 768px) {
   /* Removing mobile sticky-ticker styles as they're now in StockTicker.css */
+  .scroll-buttons {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .scroll-button {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* Default styles from create-react-app */

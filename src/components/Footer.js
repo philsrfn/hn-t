@@ -1,19 +1,35 @@
 // src/components/Footer.js
-import React from 'react';
+import React, { forwardRef } from 'react';
+import './Footer.css';
 
-const Footer = () => {
+const Footer = forwardRef((props, ref) => {
   return (
-    <footer className="footer">
+    <footer className="footer" ref={ref}>
       <div className="footer-content">
-        <p className="copyright">© 2025 Hacker News Reader</p>
-        <nav className="footer-nav">
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-          <a href="/privacy">Privacy Policy</a>
-        </nav>
+        <p className="footer-description">
+          A modern Hacker News client built with React. Stay updated with the latest tech news and discussions.
+        </p>
+        <div className="footer-links">
+          <a
+            href="https://github.com/phneutral26"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-link"
+          >
+            GitHub
+          </a>
+          <a
+            href="https://news.ycombinator.com/user?id=phneutral26"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-link"
+          >
+            Hacker News
+          </a>
+        </div>
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;
