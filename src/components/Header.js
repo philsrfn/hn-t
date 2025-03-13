@@ -47,7 +47,6 @@ const Header = ({ activeCategory, onCategoryChange }) => {
     <header className="header">
       <div className="header-main">
         <div className="logo">
-          <span className="logo-icon">T</span>
           TeleHacker News
         </div>
         

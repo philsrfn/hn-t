@@ -11,9 +11,9 @@ const InfiniteStoryList = ({ category }) => {
   const [page, setPage] = useState(0);
   const [autoLoad, setAutoLoad] = useState(true);
   const loaderRef = useRef(null);
-  const storiesPerPage = 20;
+  const storiesPerPage = 10;
   const initialOffset = 1; // Skip the first story (featured story)
-  const maxAutoLoadPages = 2; // Maximum number of pages to auto-load
+  const maxAutoLoadPages = 1; // Maximum number of pages to auto-load
 
   // Load initial stories
   useEffect(() => {
