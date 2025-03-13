@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Node.js CI/CD
 
 on:
   push:
@@ -10,8 +10,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     strategy:
@@ -29,3 +28,35 @@ jobs:
     - run: npm install
     - run: npm ci
     - run: CI=false npm run build --if-present
+    - run: npm run test
+    # Deploy to server
+    - name: Deploy to server
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: appleboy/ssh-action@master
+      with:
+        host: 164.30.69.195
+        username: linux
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # Create directory if it doesn't exist
+          mkdir -p /home/linux/hn-t
+          
+          # Initialize git repo if not already done
+          if [ ! -d "/home/linux/hn-t/.git" ]; then
+            cd /home/linux/hn-t
+            git init
+            git remote add origin git@github.com:phneutral26/hn-t.git
+            git fetch
+            git checkout -f main
+          else
+            cd /home/linux/hn-t
+            git fetch
+            git reset --hard origin/main
+          fi
+          
+          # Install dependencies and build
+          npm install
+          npm run build
+          
+          # Restart nginx
+          sudo systemctl restart nginx
