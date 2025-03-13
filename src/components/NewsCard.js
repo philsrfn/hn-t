@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import '../styles/NewsCard.css';
 
 const NewsCard = ({ story }) => {
-  // Get a random category for each story (for visualization purposes)
-  const getRandomCategory = () => {
+  // Get a random but consistent category for each story based on story ID
+  const category = useMemo(() => {
     const categories = ['Tech', 'AI', 'Programming', 'Startup', 'Data', 'Open Source', 'Web Dev'];
-    return categories[Math.floor(Math.random() * categories.length)];
-  };
+    // Use the story ID to get a consistent category for the same story
+    const index = story.id % categories.length;
+    return categories[index];
+  }, [story.id]);
+  
+  // Format the hostname from URL
+  const hostname = useMemo(() => {
+    if (!story.url) return null;
+    try {
+      return new URL(story.url).hostname.replace('www.', '');
+    } catch (e) {
+      return null;
+    }
+  }, [story.url]);
   
   // Handle click to open the article in a new tab
   const handleCardClick = () => {
@@ -17,17 +29,16 @@ const NewsCard = ({ story }) => {
   
   return (
     <div className="news-card" onClick={handleCardClick}>
-      <div className="card-image"></div>
       <div className="card-content">
-        <span className="card-category">{getRandomCategory()}</span>
+        <span className="card-category">{category}</span>
         <h3 className="card-title">{story.title}</h3>
         <div className="card-metadata">
           <span>By {story.by}</span>
           <span>{story.score} points</span>
         </div>
-        {story.url && (
+        {hostname && (
           <div className="card-source">
-            {new URL(story.url).hostname.replace('www.', '')}
+            {hostname}
           </div>
         )}
         <div className="card-comments">
@@ -45,4 +56,5 @@ const NewsCard = ({ story }) => {
   );
 };
 
-export default NewsCard;
+// Use memo to prevent unnecessary re-renders when props haven't changed
+export default memo(NewsCard);

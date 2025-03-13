@@ -1,0 +1,21 @@
+# TODO
+
+- [x] Stock ticker always on display
+- [x] Featured story same width as storylist
+- [] Make footer nice
+- [] Implement viewing posts
+- [] Add dark mode toggle
+- [] Implement search functionality
+- [] Add loading skeleton animations
+- [] Save favorite stories feature
+- [] Add sorting options (by points, comments, date)
+- [] Implement user profiles/comments view
+- [] Add share buttons for stories
+- [] Create mobile-optimized view
+- [] Add category filters/tags
+- [] Implement story bookmarking
+- [] Add reading time estimates
+- [] Create RSS feed option
+- [] Add keyboard shortcuts
+- [] Implement story preview on hover
+- [] Properly assign categories, dont just guess

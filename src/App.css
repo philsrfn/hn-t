@@ -1,3 +1,30 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  /* Removing mobile sticky-ticker styles as they're now in StockTicker.css */
+}
+
+/* Default styles from create-react-app */
 .App {
   text-align: center;
 }

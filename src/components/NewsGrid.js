@@ -1,5 +1,5 @@
 // src/components/NewsGrid.js
-import React from 'react';
+import React, { memo } from 'react';
 import NewsCard from './NewsCard';
 import '../styles/NewsGrid.css';
 
@@ -13,4 +13,5 @@ const NewsGrid = ({ stories }) => {
   );
 };
 
-export default NewsGrid;
+// Use memo to prevent unnecessary re-renders when props haven't changed
+export default memo(NewsGrid);

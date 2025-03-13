@@ -3,19 +3,29 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Rubik', 'Arial', sans-serif;
-  }
+}
   
-  body {
+body {
     background-color: #f5f5f5;
-  }
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
   
-  .app-container {
+.app-container {
     width: 100%;
     min-height: 100vh;
-  }
+    overflow-x: hidden;
+}
+
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
   
-  /* Mobile Adjustments */
-  @media (max-width: 768px) {
+/* Mobile Adjustments */
+@media (max-width: 768px) {
     .featured-story {
       flex-direction: column;
       height: auto;
@@ -36,4 +46,4 @@
     .footer-content {
       flex-direction: column;
     }
-  }
+}

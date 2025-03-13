@@ -1,72 +1,100 @@
 // src/App.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import Header from './components/Header';
-import SecondaryNav from './components/SecondaryNav';
 import FeaturedStory from './components/FeaturedStory';
 import StockTicker from './components/StockTicker';
-import NewsGrid from './components/NewsGrid';
-import Pagination from './components/Pagination';
+import InfiniteStoryList from './components/InfiniteStoryList';
 import Footer from './components/Footer';
-import { fetchTopStories } from './services/api';
+import { fetchStories } from './services/api';
+import './styles/NewsSection.css';
 
 function App() {
-  const [topStories, setTopStories] = useState([]);
+  const [featuredStory, setFeaturedStory] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const storiesPerPage = 9;
+  const [activeCategory, setActiveCategory] = useState('top');
+  const [error, setError] = useState(null);
+  
+  // Fetch just the featured story
+  const getFeaturedStory = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Fetch just one story for the featured spot
+      const stories = await fetchStories(activeCategory, 1, 0);
+      if (stories && stories.length > 0) {
+        setFeaturedStory(stories[0]);
+      } else {
+        setFeaturedStory(null);
+      }
+    } catch (error) {
+      console.error('Error fetching featured story:', error);
+      setError('Failed to load featured story. Please try again later.');
+      setFeaturedStory(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeCategory]);
   
   useEffect(() => {
-    const getStories = async () => {
-      try {
-        const stories = await fetchTopStories(30);
-        setTopStories(stories);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
+    getFeaturedStory();
+  }, [getFeaturedStory]);
+  
+  // Handle category change
+  const handleCategoryChange = (category) => {
+    if (category !== activeCategory) {
+      setActiveCategory(category);
+    }
+  };
+  
+  // Get section title based on active category
+  const getSectionTitle = () => {
+    const titles = {
+      top: 'Top Stories',
+      new: 'New Stories',
+      best: 'Best Stories',
+      ask: 'Ask HN',
+      show: 'Show HN',
+      job: 'Jobs'
     };
-    
-    getStories();
-  }, []);
+    return titles[activeCategory] || 'Stories';
+  };
   
-  // Get current stories for pagination
-  const indexOfLastStory = currentPage * storiesPerPage;
-  const indexOfFirstStory = indexOfLastStory - storiesPerPage;
-  const currentStories = topStories.slice(indexOfFirstStory, indexOfLastStory);
-  const featuredStory = topStories.length > 0 ? topStories[0] : null;
-  
-  // Change page
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  // Retry loading if there was an error
+  const handleRetry = () => {
+    getFeaturedStory();
+  };
   
   return (
     <div className="app-container">
-      <Header />
-      <SecondaryNav />
-      
-      {!loading && featuredStory && (
-        <FeaturedStory story={featuredStory} />
-      )}
+      <Header 
+        activeCategory={activeCategory} 
+        onCategoryChange={handleCategoryChange} 
+      />
       
       <StockTicker />
       
-      <section className="news-section">
-        <h2 className="section-title">Top Stories</h2>
-        
-        {loading ? (
-          <div>Loading Hacker News stories...</div>
-        ) : (
-          <NewsGrid stories={currentStories} />
+      <div className="main-content">
+        {!loading && !error && featuredStory && (
+          <FeaturedStory story={featuredStory} />
         )}
         
-        <Pagination 
-          storiesPerPage={storiesPerPage}
-          totalStories={topStories.length}
-          paginate={paginate}
-          currentPage={currentPage}
-        />
-      </section>
+        <section className="news-section">
+          <div className="section-header">
+            <h2 className="section-title">{getSectionTitle()}</h2>
+            {loading && <span className="loading-indicator">Loading...</span>}
+          </div>
+          
+          {error ? (
+            <div className="error-container">
+              <p>{error}</p>
+              <button onClick={handleRetry} className="retry-button">Retry</button>
+            </div>
+          ) : (
+            <InfiniteStoryList category={activeCategory} />
+          )}
+        </section>
+      </div>
       
       <Footer />
     </div>

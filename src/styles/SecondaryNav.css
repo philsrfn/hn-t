@@ -32,23 +32,33 @@
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
-    padding: 5px 0;
+    padding: 5px 10px;
     position: relative;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
   }
   
   .category-link:hover {
-    color: #007bff;
+    color: var(--telekom-magenta);
+    background-color: rgba(226, 0, 116, 0.05);
   }
   
-  .category-link:hover::after {
+  .category-link.active {
+    color: var(--telekom-magenta);
+    font-weight: 600;
+  }
+  
+  .category-link.active::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -2px;
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #007bff;
+    background-color: var(--telekom-magenta);
   }
   
   @media (max-width: 768px) {
@@ -62,5 +72,6 @@
     
     .category-link {
       font-size: 13px;
+      padding: 5px 8px;
     }
   }
