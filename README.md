@@ -2,7 +2,7 @@
 
 A modern, responsive Hacker News client with a sleek UI and dark mode support! Built with React and styled with custom CSS.
 
-![TeleHacker News](https://via.placeholder.com/800x400?text=TeleHacker+News+Screenshot)
+![TeleHacker News as of 13th March 2025](/public/images/Bildschirmfoto%202025-03-13%20um%2014.17.28.png)
 
 ## ✨ Features
 
