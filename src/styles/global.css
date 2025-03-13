@@ -1,0 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Rubik', 'Arial', sans-serif;
+  }
+  
+  body {
+    background-color: #f5f5f5;
+  }
+  
+  .app-container {
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  /* Mobile Adjustments */
+  @media (max-width: 768px) {
+    .featured-story {
+      flex-direction: column;
+      height: auto;
+    }
+    
+    .featured-title, .featured-description {
+      max-width: 100%;
+    }
+    
+    .featured-image {
+      height: 200px;
+    }
+    
+    .header-right {
+      display: none;
+    }
+    
+    .footer-content {
+      flex-direction: column;
+    }
+  }

@@ -1,0 +1,67 @@
+.featured-story {
+    position: relative;
+    height: 300px;
+    background: linear-gradient(to right, var(--telekom-magenta), var(--telekom-light-magenta));
+    color: white;
+    display: flex;
+    margin: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .featured-story:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .featured-content {
+    padding: 40px;
+    flex: 1;
+    z-index: 1;
+  }
+  
+  .featured-title {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    max-width: 60%;
+  }
+  
+  .featured-description {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    max-width: 60%;
+  }
+  
+  .featured-image {
+    flex: 1;
+    background-image: url('https://via.placeholder.com/500');
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .comments-link a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+  }
+  
+  .comments-link a:hover {
+    color: white;
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 768px) {
+    .featured-story {
+      flex-direction: column;
+      height: auto;
+    }
+    
+    .featured-title, .featured-description {
+      max-width: 100%;
+    }
+    
+    .featured-image {
+      height: 200px;
+    }
+  }
