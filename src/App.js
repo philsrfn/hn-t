@@ -1,6 +1,7 @@
 // src/App.js
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
+import './styles/theme.css';
 import Header from './components/Header';
 import FeaturedStory from './components/FeaturedStory';
 import StockTicker from './components/StockTicker';

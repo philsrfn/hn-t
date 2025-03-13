@@ -1,0 +1,64 @@
+:root {
+  /* Light theme (default) */
+  --telekom-magenta: #e20074;
+  --telekom-magenta-rgb: 226, 0, 116; /* RGB values for rgba() functions */
+  --telekom-light-magenta: #ff3399; /* Light magenta for gradients */
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --card-background: #ffffff;
+  --card-border: #e0e0e0;
+  --card-shadow: rgba(0, 0, 0, 0.05);
+  --hover-background: #f5f5f5;
+  --separator-color: #e0e0e0;
+  --ticker-background: #f8f9fa;
+  --ticker-text: #333333;
+  --ticker-item-background: rgba(255, 255, 255, 0.5);
+  --ticker-separator: #bbb;
+  --link-color: #0066cc;
+  --link-visited: #551a8b;
+  --input-background: #ffffff;
+  --input-border: #e0e0e0;
+  --input-text: #333333;
+  --button-background: #f0f0f0;
+  --button-text: #333333;
+  --positive-color: #28a745;
+  --negative-color: #dc3545;
+}
+
+[data-theme="dark"] {
+  --telekom-magenta: #ff0080; /* Brighter magenta for dark mode */
+  --telekom-magenta-rgb: 255, 0, 128; /* RGB values for rgba() functions */
+  --telekom-light-magenta: #ff4da6; /* Light magenta for gradients in dark mode */
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --card-background: #1e1e1e;
+  --card-border: #333333;
+  --card-shadow: rgba(0, 0, 0, 0.2);
+  --hover-background: #2a2a2a;
+  --separator-color: #333333;
+  --ticker-background: #1a1a1a;
+  --ticker-text: #e0e0e0;
+  --ticker-item-background: rgba(40, 40, 40, 0.5);
+  --ticker-separator: #555;
+  --link-color: #4da3ff;
+  --link-visited: #b388ff;
+  --input-background: #2a2a2a;
+  --input-border: #444444;
+  --input-text: #e0e0e0;
+  --button-background: #333333;
+  --button-text: #e0e0e0;
+  --positive-color: #4caf50;
+  --negative-color: #f44336;
+}
+
+/* Transition for smooth theme switching */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Apply transitions to common elements */
+a, button, input, select, textarea {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+} 

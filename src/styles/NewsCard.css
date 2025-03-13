@@ -1,10 +1,11 @@
 .news-card {
-  background: #ffffff;
+  background: var(--card-background);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--card-shadow);
+  border: 1px solid var(--card-border);
   padding: 1rem;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -12,7 +13,13 @@
 
 .news-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px var(--card-shadow);
+  border-color: var(--telekom-magenta);
+}
+
+.news-card:active {
+  border-color: var(--telekom-magenta);
+  box-shadow: 0 0 0 2px rgba(var(--telekom-magenta-rgb), 0.3);
 }
 
 .card-content {
@@ -23,7 +30,7 @@
 
 .card-category {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--telekom-magenta);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -32,19 +39,21 @@
   margin: 0;
   font-size: 1rem;
   line-height: 1.4;
-  color: #333;
+  color: var(--text-color);
 }
 
 .card-metadata {
   display: flex;
   gap: 1rem;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
 .card-source {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
 .card-comments {
@@ -52,11 +61,12 @@
 }
 
 .card-comments a {
-  color: #666;
+  color: var(--link-color);
   text-decoration: none;
   font-size: 0.8rem;
 }
 
 .card-comments a:hover {
   text-decoration: underline;
+  color: var(--telekom-magenta);
 }

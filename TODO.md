@@ -4,7 +4,7 @@
 - [x] Featured story same width as storylist
 - [] Make footer nice
 - [] Implement viewing posts
-- [] Add dark mode toggle
+- [x] Add dark mode toggle
 - [] Implement search functionality
 - [] Add loading skeleton animations
 - [] Save favorite stories feature
