@@ -25,11 +25,63 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install
-    - run: npm ci
+    - name: Install dependencies
+      run: npm ci
+    - name: Setup test environment
+      run: |
+        # Create a .env file for testing if needed
+        echo "NODE_ENV=test" > .env
+        # Ensure all testing libraries are installed
+        npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event
+        # Create a setup file for Jest if it doesn't exist
+        mkdir -p src
+        if [ ! -f "src/setupTests.js" ]; then
+          echo "// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+// Mock the window.scrollTo function
+window.scrollTo = jest.fn();
+
+// Mock matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
+// Suppress console warnings and errors during tests
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+console.error = (...args) => {
+  if (args[0] && args[0].includes && 
+      (args[0].includes('Warning: An update to') || 
+       args[0].includes('not wrapped in act'))) {
+    return;
+  }
+  originalConsoleError(...args);
+};
+console.warn = (...args) => {
+  if (args[0] && args[0].includes && args[0].includes('Warning:')) {
+    return;
+  }
+  originalConsoleWarn(...args);
+};" > src/setupTests.js
+        fi
     - name: Run tests
-      run: npm test
-    - run: CI=false npm run build --if-present
+      run: npm test -- --watchAll=false --ci --silent
+    - name: Build
+      run: CI=false npm run build --if-present
 
     # Deploy to server
     - name: Deploy to server
