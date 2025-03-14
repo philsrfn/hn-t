@@ -33,10 +33,11 @@ jobs:
         echo "NODE_ENV=test" > .env
         # Ensure all testing libraries are installed
         npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event
-        # Create a setup file for Jest if it doesn't exist
+    - name: Create setupTests.js
+      run: |
+        # Create the setupTests.js file with proper content
         mkdir -p src
-        if [ ! -f "src/setupTests.js" ]; then
-          cat > src/setupTests.js << 'EOL'
+        cat > src/setupTests.js << 'EOF'
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
@@ -78,8 +79,7 @@ console.warn = (...args) => {
   }
   originalConsoleWarn(...args);
 };
-EOL
-        fi
+EOF
     - name: Run tests
       run: npm test -- --watchAll=false --ci --silent
     - name: Build
