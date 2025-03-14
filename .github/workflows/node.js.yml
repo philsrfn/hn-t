@@ -36,7 +36,8 @@ jobs:
         # Create a setup file for Jest if it doesn't exist
         mkdir -p src
         if [ ! -f "src/setupTests.js" ]; then
-          echo "// jest-dom adds custom jest matchers for asserting on DOM nodes.
+          cat > src/setupTests.js << 'EOL'
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
@@ -76,7 +77,8 @@ console.warn = (...args) => {
     return;
   }
   originalConsoleWarn(...args);
-};" > src/setupTests.js
+};
+EOL
         fi
     - name: Run tests
       run: npm test -- --watchAll=false --ci --silent
