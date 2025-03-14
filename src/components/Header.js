@@ -16,10 +16,19 @@ const Header = ({ activeCategory, onCategoryChange }) => {
     } else if (savedTheme === 'light') {
       setDarkMode(false);
       document.documentElement.setAttribute('data-theme', 'light');
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      // Use system preference if no saved preference
-      setDarkMode(true);
-      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      // Check for system preference if available, otherwise default to light mode
+      try {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          setDarkMode(true);
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (error) {
+        // If matchMedia fails or is not available, default to light mode
+        console.log('matchMedia not available, defaulting to light mode');
+        setDarkMode(false);
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
     }
   }, []);
 
