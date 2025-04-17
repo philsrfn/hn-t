@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/StockTicker.css';
-import { fetchMultipleStocks } from '../services/stockApi';
+import { fetchStockQuote } from '../services/stockApi';
 
 const StockTicker = () => {
   const [stocks, setStocks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const isUpdatingRef = useRef(false); // Ref to track if an update is in progress
 
-  // List of stock symbols to fetch
-  const stockSymbols = ['AAPL', 'MSFT', 'AMZN', 'GOOGL', 'META', 'TSLA', 'DTE.DE'];
+  // Reduced number of stock symbols to 5 to stay within API rate limits
+  const stockSymbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'];
 
   useEffect(() => {
     // Clear any existing intervals when dependencies change
@@ -18,20 +20,55 @@ const StockTicker = () => {
       if (isUpdatingRef.current) return;
       
       isUpdatingRef.current = true;
+      setLoading(true);
       
       try {
         // Fetch real stock data from Alpha Vantage
-        const realStockData = await fetchMultipleStocks(stockSymbols);
+        console.log('Fetching stock data from Alpha Vantage API...');
         
-        // Only update state if we got data back
-        if (realStockData && realStockData.length > 0) {
-          setStocks(realStockData);
-          console.log('Updated stock data from Alpha Vantage API');
+        // Progressive loading - update UI as each stock is fetched
+        let fetched = 0;
+        for (const symbol of stockSymbols) {
+          try {
+            // Fetch individual stock to update UI faster
+            const stockData = await fetchStockQuote(symbol);
+            
+            if (stockData) {
+              // Update existing stocks array, adding new stock or replacing if exists
+              setStocks(prevStocks => {
+                const existingIndex = prevStocks.findIndex(s => s.symbol === stockData.symbol);
+                
+                if (existingIndex >= 0) {
+                  // Replace existing stock
+                  const updatedStocks = [...prevStocks];
+                  updatedStocks[existingIndex] = stockData;
+                  return updatedStocks;
+                } else {
+                  // Add new stock
+                  return [...prevStocks, stockData];
+                }
+              });
+              
+              fetched++;
+              console.log(`Progressive update: ${fetched}/${stockSymbols.length} stocks loaded`);
+            }
+          } catch (err) {
+            console.error(`Error fetching individual stock ${symbol}:`, err);
+          }
+        }
+        
+        if (fetched === 0) {
+          setError('No stock data available. Please check your API key configuration.');
+          console.error('No data returned from stock API');
+        } else {
+          setError(null);
         }
       } catch (error) {
         console.error('Error fetching stock data:', error);
+        setError('Failed to fetch stock data: ' + error.message);
       } finally {
         isUpdatingRef.current = false;
+        setLoading(false);
       }
     };
 
@@ -51,12 +88,35 @@ const StockTicker = () => {
         clearInterval(intervalId);
       }
     };
-  }, []); 
+  }, []); // Empty dependency array - run once on mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Create a duplicate set of ticker items to ensure continuous scrolling
   const renderTickerItems = () => {
-    if (stocks.length === 0) return null;
+    // Show loading only when we have no stocks data at all
+    if (loading && stocks.length === 0) {
+      return (
+        <div className="ticker-item">
+          <span>Loading stock data...</span>
+        </div>
+      );
+    }
+    
+    if (error && stocks.length === 0) {
+      return (
+        <div className="ticker-item error">
+          <span>Could not load stock data. Please check API key configuration.</span>
+        </div>
+      );
+    }
+    
+    if (stocks.length === 0) {
+      return (
+        <div className="ticker-item">
+          <span>No stock data available</span>
+        </div>
+      );
+    }
     
     // Helper function to render a single stock item
     const renderStockItem = (stock, key) => (
