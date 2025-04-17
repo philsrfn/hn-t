@@ -1,35 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/StockTicker.css';
+import { fetchMultipleStocks } from '../services/stockApi';
 
 const StockTicker = () => {
   const [stocks, setStocks] = useState([]);
-  // Always use mock data since API has rate limits
   const isUpdatingRef = useRef(false); // Ref to track if an update is in progress
 
-  // Mock data to use when API limit is reached
-  const mockStockData = [
-    { symbol: 'AAPL', price: 187.32, change: 1.25 },
-    { symbol: 'MSFT', price: 425.52, change: -0.87 },
-    { symbol: 'AMZN', price: 178.75, change: 2.34 },
-    { symbol: 'GOOGL', price: 163.45, change: 0.75 },
-    { symbol: 'META', price: 474.99, change: 3.21 },
-    { symbol: 'TSLA', price: 177.58, change: -1.43 },
-    { symbol: 'DTE.DE', price: 42.15, change: 0.32 },
-  ];
-
-  // Function to add small random variations to mock data to simulate market movement
-  const updateMockData = () => {
-    return mockStockData.map(stock => {
-      // Smaller change percentage to reduce jitter
-      const changePercent = (Math.random() * 2 - 1) * 0.2; // Random change between -0.2% and +0.2%
-      const priceChange = stock.price * (changePercent / 100);
-      return {
-        ...stock,
-        price: parseFloat((stock.price + priceChange).toFixed(2)),
-        change: parseFloat(priceChange.toFixed(2))
-      };
-    });
-  };
+  // List of stock symbols to fetch
+  const stockSymbols = ['AAPL', 'MSFT', 'AMZN', 'GOOGL', 'META', 'TSLA', 'DTE.DE'];
 
   useEffect(() => {
     // Clear any existing intervals when dependencies change
@@ -42,32 +20,16 @@ const StockTicker = () => {
       isUpdatingRef.current = true;
       
       try {
-        // Always use mock data to avoid API rate limits
-        setStocks(prevStocks => {
-          // If we already have stocks, make smoother transitions
-          if (prevStocks.length > 0) {
-            return prevStocks.map(prevStock => {
-              // Find the base stock data
-              const baseStock = mockStockData.find(s => s.symbol === prevStock.symbol) || prevStock;
-              
-              // Smaller change percentage for smoother transitions
-              const changePercent = (Math.random() * 2 - 1) * 0.1; // Even smaller change
-              const priceChange = baseStock.price * (changePercent / 100);
-              
-              // Apply a small change to the current price
-              return {
-                ...prevStock,
-                price: parseFloat((prevStock.price + priceChange).toFixed(2)),
-                change: parseFloat(priceChange.toFixed(2))
-              };
-            });
-          } else {
-            // Initial load - use the mock data
-            return updateMockData();
-          }
-        });
+        // Fetch real stock data from Alpha Vantage
+        const realStockData = await fetchMultipleStocks(stockSymbols);
+        
+        // Only update state if we got data back
+        if (realStockData && realStockData.length > 0) {
+          setStocks(realStockData);
+          console.log('Updated stock data from Alpha Vantage API');
+        }
       } catch (error) {
-        console.error('Error updating stock data:', error);
+        console.error('Error fetching stock data:', error);
       } finally {
         isUpdatingRef.current = false;
       }
@@ -76,8 +38,8 @@ const StockTicker = () => {
     // Initial fetch
     fetchStockData();
     
-    // Update every minute
-    const updateInterval = 60000; // 1 minute
+    // Update every 5 minutes to respect API rate limits
+    const updateInterval = 5 * 60 * 1000; // 5 minutes
     console.log(`Setting up stock ticker update interval: ${updateInterval}ms`);
     
     intervalId = setInterval(fetchStockData, updateInterval);
@@ -89,7 +51,7 @@ const StockTicker = () => {
         clearInterval(intervalId);
       }
     };
-  }, []); // We're intentionally not including mockStockData and updateMockData as dependencies
+  }, []); 
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Create a duplicate set of ticker items to ensure continuous scrolling
