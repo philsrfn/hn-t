@@ -66,7 +66,6 @@ This project helped me understand:
 - [ ] Implement comment viewing and threading
 - [ ] Add more data visualization components
 - [ ] Create a PWA for offline reading
-- [ ] Add unit and integration tests
 
 ## 🤔 Challenges I Faced
 
