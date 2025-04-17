@@ -86,6 +86,11 @@
     background-color: rgba(220, 53, 69, 0.1);
 }
   
+.ticker-item.error {
+    color: var(--negative-color);
+    font-weight: bold;
+}
+  
 @keyframes ticker {
     0% {
       transform: translateX(0);

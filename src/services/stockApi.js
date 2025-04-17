@@ -82,9 +82,12 @@ async function fetchStockQuoteDirectly(symbol) {
     const API_KEY = process.env.REACT_APP_ALPHA_VANTAGE_API_KEY;
     
     if (!API_KEY) {
-      console.warn('Alpha Vantage API key not found in environment variables. Falling back to mock data.');
+      console.error('Alpha Vantage API key not found in environment variables!');
+      console.error('Please add REACT_APP_ALPHA_VANTAGE_API_KEY to your .env file');
       throw new Error('API key not configured');
     }
+    
+    console.log(`Fetching real stock data for ${symbol}...`);
     
     // Fetch from API if not in cache or cache expired
     const response = await fetch(
@@ -99,11 +102,17 @@ async function fetchStockQuoteDirectly(symbol) {
     
     // Check if we got valid data back or if we hit the rate limit
     if (data['Note'] && data['Note'].includes('call frequency')) {
-      console.warn('Alpha Vantage rate limit reached:', data['Note']);
+      console.error('Alpha Vantage rate limit reached:', data['Note']);
       throw new Error('Rate limit exceeded');
     }
     
-    if (data['Error Message'] || !data['Global Quote'] || Object.keys(data['Global Quote']).length === 0) {
+    if (data['Error Message']) {
+      console.error(`Alpha Vantage error: ${data['Error Message']}`);
+      throw new Error(`API error: ${data['Error Message']}`);
+    }
+    
+    if (!data['Global Quote'] || Object.keys(data['Global Quote']).length === 0) {
+      console.error(`No data available for symbol ${symbol}`, data);
       throw new Error(`No data available for symbol ${symbol}`);
     }
     
@@ -112,6 +121,8 @@ async function fetchStockQuoteDirectly(symbol) {
     const price = parseFloat(quote['05. price']);
     const previousClose = parseFloat(quote['08. previous close']);
     const change = parseFloat(quote['09. change']);
+    
+    console.log(`Received real data for ${symbol}: $${price} (${change >= 0 ? '+' : ''}${change})`);
     
     const stockData = {
       symbol,
@@ -153,6 +164,8 @@ export const fetchStockQuote = async (symbol) => {
  * @returns {Promise<Array<Object>>} - Array of stock data objects
  */
 export const fetchMultipleStocks = async (symbols) => {
+  console.log(`Attempting to fetch ${symbols.length} stock symbols:`, symbols);
+  
   try {
     // Process each symbol one at a time to respect rate limits
     const results = [];
@@ -169,6 +182,7 @@ export const fetchMultipleStocks = async (symbols) => {
       }
     }
     
+    console.log(`Successfully fetched ${results.length}/${symbols.length} stocks`);
     return results;
   } catch (error) {
     console.error('Error fetching multiple stocks:', error);
